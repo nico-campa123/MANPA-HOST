@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Push Notification Demo</title>
+</head>
+<body>
+    <button id="notifyBtn">Send Notification</button>
+    <script>
+        document.getElementById('notifyBtn').onclick = function() {
+            if (Notification.permission === "granted") {
+                new Notification("You pressed the button!");
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        new Notification("You pressed the button!");
+                    }
+                });
+            }
+        };
+    </script>
+</body>
+</html>
