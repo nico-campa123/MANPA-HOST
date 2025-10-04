@@ -1,23 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Push Notification Demo</title>
+  <meta charset="UTF-8" />
+  <title>CSV Charts Demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; }
+    canvas { max-width: 600px; margin: 2rem 0; }
+  </style>
 </head>
 <body>
-    <button id="notifyBtn">Send Notification</button>
-    <script>
-        document.getElementById('notifyBtn').onclick = function() {
-            if (Notification.permission === "granted") {
-                new Notification("You pressed the button!");
-            } else if (Notification.permission !== "denied") {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        new Notification("You pressed the button!");
-                    }
-                });
-            }
-        };
-    </script>
+  <h1>CSV Charts Demo (Mock Data)</h1>
+  <button id="loadData">Load Mock Data</button>
+
+  <h2>Bar Chart (Averages)</h2>
+  <canvas id="barChart"></canvas>
+
+  <h2>Line Chart (Trend)</h2>
+  <canvas id="lineChart"></canvas>
+
+  <h2>Pie Chart (Proportion)</h2>
+  <canvas id="pieChart"></canvas>
+
+  <h2>Radar Chart (Std Dev)</h2>
+  <canvas id="radarChart"></canvas>
+
+  <script src="script.js"></script>
 </body>
 </html>
