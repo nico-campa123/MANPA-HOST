@@ -14,8 +14,10 @@ body {
 h1.site-title {
   color: white;
   font-family: 'Overpass', sans-serif;
-  font-size: 60px;
+  font-size: 72px;
 }
+
+.spacer { height: 24px; }
 
 h3 {
   color: white;
@@ -66,18 +68,38 @@ canvas {
   padding: 4rem;
   color: #fff;
 }
-.hero h1 { font-size: 3.2rem; margin: 0 0 1rem 0; }
+.hero h1 { font-size: 3.68rem; margin: 0 0 1rem 0; }
 .hero p { max-width: 680px; line-height: 1.6; opacity: 0.9; }
 .hero .start-btn {
-  margin-top: 2rem;
+  display: block;
+  margin: 2rem auto 0; /* center horizontally */
   padding: 14px 26px;
-  font-size: 1.1rem;
+  font-size: 1.32rem; /* 20% larger */
   border-radius: 12px;
   background: linear-gradient(90deg,#7dd3fc 0%,#0ea5e9 100%);
   color: #042023;
   border: none;
   cursor: pointer;
   box-shadow: 0 14px 30px rgba(2,6,23,0.35);
+}
+
+.site-title-bottom{
+  position: absolute;
+  left: 28px;
+  bottom: 34px;
+  color: #fff;
+  font-size: 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 4px;
+}
+
+.site-credit{
+  position: absolute;
+  left: 28px;
+  bottom: 12px;
+  color: rgba(255,255,255,0.85);
+  font-size: 13px;
+  opacity: 0.95;
 }
 
 /* Table styles */
@@ -98,6 +120,12 @@ tr:hover { background: rgba(255,255,255,0.04); }
   width: 100% !important;
   height: 320px !important;
 }
+
+/* Percent display under chart */
+.percent-row { display:flex; gap:18px; align-items:center; justify-content:center; margin-top:12px; color:#dff6ff; }
+.percent-item { background: rgba(255,255,255,0.03); padding:10px 14px; border-radius:10px; min-width:120px; text-align:center; }
+.percent-value { font-size:1.1rem; font-weight:700; color:#e6f7ff; }
+.percent-label { font-size:0.85rem; color:#bfeaf7; margin-top:4px; }
 
 /* Cool button styles for dark background */
 .btn {

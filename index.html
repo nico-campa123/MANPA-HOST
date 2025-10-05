@@ -71,6 +71,7 @@
           const res = await fetch('https://python-test-2-vwex.onrender.com/upload-csv/', { method: 'POST', body: formData });
           if (!res.ok) throw new Error('Server error: ' + res.status);
           const j = await res.json();
+          console.log('Server response:', j);
           setRaw(j);
           // try to normalize predictions into [[id,pred], ...]
           let pairs = [];
@@ -112,22 +113,71 @@
         URL.revokeObjectURL(url);
       }
 
+      async function downloadMock(){
+        try{
+          // Attempt to fetch the mock file from project root
+          const res = await fetch('mock_data.csv');
+          if (!res.ok) throw new Error('Mock file not found');
+          const text = await res.text();
+          const blob = new Blob([text], { type: 'text/csv' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'mock_data.csv';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        } catch (e){
+          alert('Unable to download mock file: ' + e.message);
+        }
+      }
+
       return (
         <div className="app">
-          <h1 className="site-title">MANPA Tech™</h1>
+          <div className="spacer" />
           <div>
             <h3>Input CSV file</h3>
             <input type="file" ref={fileRef} accept=".csv" />
-            <button className="btn" onClick={upload}>Upload CSV</button>
+            <button className="btn" onClick={upload}>Upload CSV and run predictions</button>
+            <br></br>
+            <br></br>
             <button className="btn" onClick={() => downloadCSV(predictions)}>Download predictions</button>
+            <button className="btn" onClick={downloadMock}>Download sample CSV</button>
           </div>
-
-          <div className="container">
-            <canvas id="myChart" ref={chartRef}></canvas>
-          </div>
-
+          <div className="spacer" />
           <h2>Predictions</h2>
           <PredictionsTable data={predictions} />
+
+          <div className="spacer" />
+          <h2>Results</h2>
+          <div className="spacer" />
+          <div className="container">
+            <canvas id="myChart" ref={chartRef}></canvas>
+            {/* Percentage display for zeros/ones */}
+            <div className="percent-row">
+              {/* compute counts and percentages */}
+              {(() => {
+                const zeros = predictions.filter(p => Number(p[1]) === 0).length;
+                const ones = predictions.filter(p => Number(p[1]) === 1).length;
+                const total = zeros + ones || predictions.length || 0;
+                const pct = (n) => total ? Math.round((n/total)*1000)/10 : 0; // one decimal
+                return (
+                  <>
+                    <div className="percent-item">
+                      <div className="percent-value">{zeros} ({pct(zeros)}%)</div>
+                      <div className="percent-label">Zeros</div>
+                    </div>
+                    <div className="percent-item">
+                      <div className="percent-value">{ones} ({pct(ones)}%)</div>
+                      <div className="percent-label">Ones</div>
+                    </div>
+                    <div style={{flex:1}} />
+                  </>
+                );
+              })()}
+            </div>
+          </div>
         </div>
       );
     }
@@ -174,7 +224,7 @@
       return (
         <div>
           <div className="table-controls">
-            <input className="search-input" placeholder="Search id or prediction" value={query} onChange={e=>setQuery(e.target.value)} />
+            <input className="search-input" placeholder="Search by ID" value={query} onChange={e=>setQuery(e.target.value)} />
             <div style={{flex:1}} />
             <div className="pagination">
               <button className="page-btn" onClick={()=>setPage(1)} disabled={page===1}>«</button>
@@ -210,9 +260,11 @@
     function Landing({onStart}){
       return (
         <div className="hero">
-          <h1>AI Exoplanet detection system</h1>
-          <p>Upload a csv of any detected object by KEPLER satellite and know if it is an Exoplanet</p>
-          <button className="start-btn" onClick={onStart}>Ejecutar .csv</button>
+          <h1>AI Exoplanet detection model</h1>
+            <p>Upload a csv of the data any detected object/s by KEPLER satellite and our AI will analise the data and return the predictions. Scroll down for info about the our model</p>
+          <button className="start-btn" onClick={onStart}>Run program</button>
+            <div className="site-title-bottom">MANPA Tech™</div>
+            <div className="site-credit">Developed by Matias Szpektor, Matias Mayans Kohon, and Nicolas Campanario</div>
         </div>
       );
     }
