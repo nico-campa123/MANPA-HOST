@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>CSV Charts Demo</title>
+  <title>MANPA Tech</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-family: sans-serif; margin: 2rem; }
@@ -10,12 +10,18 @@
   </style>
 </head>
 <body>
+    <h1>MANPA Tech™</h1>
+    <br>
+    <h3>Input csv file</h3>
     <input type="file" id="csvFile" accept=".csv" />
     <button id="uploadBtn">Upload CSV</button>
-    <h1>My Sample Chart</h1>
+    <br>
+    <h1></h1>
     <div style="width: 75%; margin: auto;">
         <canvas id="myChart"></canvas>
     </div>
+  <h2>Predictions</h2>
+  <pre id="jsonOutput" style="background:#f4f4f4;padding:1rem;border-radius:6px;overflow:auto;max-height:300px"></pre>
     <script src="script.js"></script>
 </body>
 </html>
