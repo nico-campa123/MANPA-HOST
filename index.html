@@ -98,6 +98,20 @@
         }
       }
 
+      function downloadCSV(pairs){
+        if (!pairs || !pairs.length) return alert('No predictions to download');
+        const lines = ['id,pred', ...pairs.map(p => `${String(p[0]).replace(/,/g,'')},${String(p[1]).replace(/\n/g,' ')}`)];
+        const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'predictions.csv';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
       return (
         <div className="app">
           <h1 className="site-title">MANPA Tech™</h1>
@@ -105,6 +119,7 @@
             <h3>Input CSV file</h3>
             <input type="file" ref={fileRef} accept=".csv" />
             <button className="btn" onClick={upload}>Upload CSV</button>
+            <button className="btn" onClick={() => downloadCSV(predictions)}>Download predictions</button>
           </div>
 
           <div className="container">
@@ -112,7 +127,82 @@
           </div>
 
           <h2>Predictions</h2>
-          <pre id="jsonOutput">{predictions.map(p => `${p[0]}: ${p[1]}`).join('\n')}</pre>
+          <PredictionsTable data={predictions} />
+        </div>
+      );
+    }
+
+    function PredictionsTable({data}){
+      const [sortBy, setSortBy] = React.useState('id');
+      const [dir, setDir] = React.useState('asc');
+      const [query, setQuery] = React.useState('');
+      const [page, setPage] = React.useState(1);
+      const pageSize = 12;
+
+      const filtered = React.useMemo(() => {
+        const q = query.trim().toLowerCase();
+        return data.filter(d => {
+          if (!q) return true;
+          const id = String(d[0]).toLowerCase();
+          const pred = String(d[1]).toLowerCase();
+          return id.includes(q) || pred.includes(q);
+        });
+      }, [data, query]);
+
+      const rows = React.useMemo(() => {
+        const copy = filtered.map(d => ({ id: String(d[0]), pred: d[1] }));
+        copy.sort((a,b) => {
+          let A = sortBy === 'id' ? a.id : Number(a.pred);
+          let B = sortBy === 'id' ? b.id : Number(b.pred);
+          if (A < B) return dir === 'asc' ? -1 : 1;
+          if (A > B) return dir === 'asc' ? 1 : -1;
+          return 0;
+        });
+        return copy;
+      }, [filtered, sortBy, dir]);
+
+      const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+      const pageRows = rows.slice((page-1)*pageSize, page*pageSize);
+
+      function toggle(column){
+        if (sortBy === column) setDir(d => d === 'asc' ? 'desc' : 'asc');
+        else { setSortBy(column); setDir('asc'); }
+      }
+
+      React.useEffect(() => { setPage(1); }, [query, sortBy, dir]);
+
+      return (
+        <div>
+          <div className="table-controls">
+            <input className="search-input" placeholder="Search id or prediction" value={query} onChange={e=>setQuery(e.target.value)} />
+            <div style={{flex:1}} />
+            <div className="pagination">
+              <button className="page-btn" onClick={()=>setPage(1)} disabled={page===1}>«</button>
+              <button className="page-btn" onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page===1}>‹</button>
+              <div style={{color:'#cfeaf7'}}>{page} / {totalPages}</div>
+              <button className="page-btn" onClick={()=>setPage(p=>Math.min(totalPages,p+1))} disabled={page===totalPages}>›</button>
+              <button className="page-btn" onClick={()=>setPage(totalPages)} disabled={page===totalPages}>»</button>
+            </div>
+          </div>
+
+          <div style={{overflowX: 'auto'}}>
+            <table style={{width: '100%', borderCollapse: 'collapse'}}>
+              <thead>
+                <tr>
+                  <th style={{textAlign: 'left', cursor: 'pointer'}} onClick={() => toggle('id')}>ID {sortBy==='id' ? (dir==='asc' ? '▲' : '▼') : ''}</th>
+                  <th style={{textAlign: 'left', cursor: 'pointer'}} onClick={() => toggle('pred')}>Prediction {sortBy==='pred' ? (dir==='asc' ? '▲' : '▼') : ''}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pageRows.map((r, i) => (
+                  <tr key={i} className={Number(r.pred)===1 ? 'highlight' : ''} style={{borderTop: '1px solid rgba(255,255,255,0.06)'}}>
+                    <td style={{padding: '8px 6px'}}>{r.id}</td>
+                    <td style={{padding: '8px 6px'}}>{r.pred}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       );
     }

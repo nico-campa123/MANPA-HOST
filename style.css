@@ -4,7 +4,8 @@
 
 body {
   margin: 2rem;
-  background-image: url('FONDITO.png');
+  /* darker overlay on the background image to increase contrast */
+  background-image: linear-gradient(rgba(0,0,0,0.62), rgba(0,0,0,0.62)), url('FONDITO.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -26,7 +27,7 @@ canvas {
 }
 
 #jsonOutput {
-  background: rgba(0,0,0,0.48);
+  background: rgba(0,0,0,0.78);
   color: #fff;
   padding: 1rem;
   border-radius: 8px;
@@ -78,6 +79,19 @@ canvas {
   cursor: pointer;
   box-shadow: 0 14px 30px rgba(2,6,23,0.35);
 }
+
+/* Table styles */
+table { background: rgba(255,255,255,0.06); border-radius: 8px; }
+th { padding: 12px 8px; color: #cfeaf7; }
+td { padding: 10px 8px; color: #e6f7ff; }
+tr:hover { background: rgba(255,255,255,0.04); }
+.highlight { background: linear-gradient(90deg, rgba(54,162,235,0.12), rgba(54,162,235,0.06)); }
+
+.table-controls { display:flex; gap:12px; align-items:center; margin-bottom:12px; }
+.search-input { padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.03); color:#fff; }
+.pagination { display:flex; gap:8px; align-items:center; }
+.page-btn { padding:6px 10px; border-radius:8px; background: rgba(255,255,255,0.03); color:#fff; border:none; cursor:pointer; }
+.page-btn:disabled { opacity:0.4; cursor:default; }
 
 /* Make canvas take a reasonable height */
 .container canvas {
