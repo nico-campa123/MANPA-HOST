@@ -55,6 +55,30 @@ canvas {
   color: #fff;
 }
 
+/* Landing hero styles */
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 80vh;
+  padding: 4rem;
+  color: #fff;
+}
+.hero h1 { font-size: 3.2rem; margin: 0 0 1rem 0; }
+.hero p { max-width: 680px; line-height: 1.6; opacity: 0.9; }
+.hero .start-btn {
+  margin-top: 2rem;
+  padding: 14px 26px;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  background: linear-gradient(90deg,#7dd3fc 0%,#0ea5e9 100%);
+  color: #042023;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 14px 30px rgba(2,6,23,0.35);
+}
+
 /* Make canvas take a reasonable height */
 .container canvas {
   width: 100% !important;
