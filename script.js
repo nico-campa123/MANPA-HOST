@@ -1,5 +1,5 @@
 // Replace with your real backend URL
-const API_URL = "https://plebeyoo.onrender.com";
+const API_URL = "https://python-test-2-vwex.onrender.com";
 
 async function checkAPI() {
   try {
@@ -40,45 +40,23 @@ document.getElementById("uploadBtn").addEventListener("click", async () => {
     if (!res.ok) throw new Error(`Server error: ${res.status}`);
 
     data = await res.json();
-    console.log("Number of characters in CSV:", data.characters);
+    console.log(data);
+    // Save the returned JSON as a file on the user's machine (triggers browser download)
+    try {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "data_from_script.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      console.log("Saved response to data_from_script.json");
+    } catch (saveErr) {
+      console.error("Error saving JSON to file:", saveErr);
+    }
   } catch (err) {
     console.error("Error uploading file:", err);
   }
 });
-
-// Data for the chart
-const months = ["inp1"];
-const salesFigures = [data.characters]; 
-
-// Configuration object
-const datasuli = {
-    labels: months,
-    datasets: [{
-        label: 'Tamaño del csv',
-        backgroundColor: 'rgba(75, 192, 192, 0.5)', // Teal color
-        borderColor: 'rgb(75, 192, 192)',
-        borderWidth: 1,
-        data: salesFigures,
-    }]
-};
-console.log(salesFigures);
-const config = {
-    type: 'line', // You can change this to 'bar', 'pie', etc.
-    datasuli: datasuli,
-    options: {
-        responsive: true,
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        }
-    }
-};
-
-// Create and Render the Chart using the 'myChart' canvas ID
-// We use a self-invoking function or check for document readiness to ensure 
-// the canvas element is loaded before the script tries to access it.
-new Chart(
-    document.getElementById('myChart'),
-    config
-);
