@@ -19,6 +19,8 @@
     const { useState, useRef, useEffect } = React;
 
     function App() {
+      // Ensure Chart.js uses the same font as the page
+      Chart.defaults.font.family = "Overpass, sans-serif";
       const [predictions, setPredictions] = useState([]);
       const [raw, setRaw] = useState(null);
       const fileRef = useRef();

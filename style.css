@@ -1,5 +1,8 @@
+:root { --main-font: 'Overpass', sans-serif; }
+
+* { font-family: var(--main-font); }
+
 body {
-  font-family: 'Overpass', sans-serif;
   margin: 2rem;
   background-image: url('FONDITO.png');
   background-size: cover;
