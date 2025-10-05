@@ -3,25 +3,119 @@
 <head>
   <meta charset="UTF-8" />
   <title>MANPA Tech</title>
+   <link href="https://fonts.googleapis.com/css2?family=Overpass&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body { font-family: sans-serif; margin: 2rem; }
-    canvas { max-width: 600px; margin: 2rem 0; }
-  </style>
+  <!-- React + ReactDOM + Babel (for small dev/demo without build step) -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
-    <h1>MANPA Tech™</h1>
-    <br>
-    <h3>Input csv file</h3>
-    <input type="file" id="csvFile" accept=".csv" />
-    <button id="uploadBtn">Upload CSV</button>
-    <br>
-    <h1></h1>
-    <div style="width: 75%; margin: auto;">
-        <canvas id="myChart"></canvas>
-    </div>
-  <h2>Predictions</h2>
-  <pre id="jsonOutput" style="background:#f4f4f4;padding:1rem;border-radius:6px;overflow:auto;max-height:300px"></pre>
-    <script src="script.js"></script>
+  <div id="root"></div>
+
+  <!-- React application (Babel will compile the JSX in-browser) -->
+  <script type="text/babel">
+    const { useState, useRef, useEffect } = React;
+
+    function App() {
+      const [predictions, setPredictions] = useState([]);
+      const [raw, setRaw] = useState(null);
+      const fileRef = useRef();
+      const chartRef = useRef(null);
+      const chartInstance = useRef(null);
+
+    useEffect(() => {
+        // draw or update chart when predictions change
+        const ctx = chartRef.current && chartRef.current.getContext('2d');
+        if (!ctx) return;
+        const zeros = predictions.filter(p => Number(p[1]) === 0).length;
+        const ones = predictions.filter(p => Number(p[1]) === 1).length;
+        const data = [zeros, ones];
+
+        if (chartInstance.current) {
+          chartInstance.current.data.datasets[0].data = data;
+          chartInstance.current.update();
+        } else {
+          chartInstance.current = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: ['Zeros', 'Ones'],
+              datasets: [{
+                label: 'Count',
+                data,
+                backgroundColor: ['rgba(201,203,207,0.8)', 'rgba(54,162,235,0.8)'],
+                borderColor: ['rgba(201,203,207,1)', 'rgba(54,162,235,1)'],
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1, color: '#fff' }, grid: { color: 'rgba(255,255,255,0.08)' } },
+                x: { ticks: { color: '#fff' }, grid: { color: 'rgba(255,255,255,0.03)' } }
+              },
+              plugins: { legend: { labels: { color: '#fff' } }, title: { display: false } }
+            }
+          });
+        }
+      }, [predictions]);
+
+      async function upload() {
+        const file = fileRef.current.files[0];
+        if (!file) return alert('Select a CSV first');
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+          const res = await fetch('https://python-test-2-vwex.onrender.com/upload-csv/', { method: 'POST', body: formData });
+          if (!res.ok) throw new Error('Server error: ' + res.status);
+          const j = await res.json();
+          setRaw(j);
+          // try to normalize predictions into [[id,pred], ...]
+          let pairs = [];
+          // Normalize many possible server shapes into [[id,pred], ...]
+          if (Array.isArray(j.predictions)) {
+            // common: [[id, pred], ...] or [{id, pred}, ...]
+            if (j.predictions.length && typeof j.predictions[0] === 'object' && !Array.isArray(j.predictions[0])) {
+              pairs = j.predictions.map((it, i) => [it.id ?? it.ID ?? i, it.pred ?? it.prediction ?? it.value ?? null]);
+            } else {
+              pairs = j.predictions;
+            }
+          } else if (j.predictions && typeof j.predictions === 'object') {
+            // map of id->pred
+            pairs = Object.keys(j.predictions).map(k => [k, j.predictions[k]]);
+          } else if (Array.isArray(j) && j.length) {
+            // maybe the root is the array
+            pairs = j;
+          } else {
+            pairs = [];
+          }
+          setPredictions(pairs);
+        } catch (e) {
+          console.error(e);
+          alert('Upload failed: ' + e.message);
+        }
+      }
+
+      return (
+        <div className="app">
+          <h1 className="site-title">MANPA Tech™</h1>
+          <div>
+            <h3>Input CSV file</h3>
+            <input type="file" ref={fileRef} accept=".csv" />
+            <button className="btn" onClick={upload}>Upload CSV</button>
+          </div>
+
+          <div className="container">
+            <canvas id="myChart" ref={chartRef}></canvas>
+          </div>
+
+          <h2>Predictions</h2>
+          <pre id="jsonOutput">{predictions.map(p => `${p[0]}: ${p[1]}`).join('\n')}</pre>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
 </body>
 </html>

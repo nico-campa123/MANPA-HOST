@@ -1,0 +1,85 @@
+body {
+  font-family: 'Overpass', sans-serif;
+  margin: 2rem;
+  background-image: url('FONDITO.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+h1.site-title {
+  color: white;
+  font-family: 'Overpass', sans-serif;
+  font-size: 60px;
+}
+
+h3 {
+  color: white;
+}
+
+canvas {
+  max-width: 600px;
+  margin: 2rem 0;
+}
+
+#jsonOutput {
+  background: rgba(0,0,0,0.48);
+  color: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  overflow: auto;
+  max-height: 320px;
+  white-space: pre-wrap;
+}
+
+.container {
+  width: 75%;
+  margin: auto;
+}
+
+/* Center the app and make text white-friendly for dark background */
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+.app {
+  width: 100%;
+  max-width: 900px;
+  padding: 2rem;
+  text-align: center;
+  color: #fff;
+}
+
+/* Make canvas take a reasonable height */
+.container canvas {
+  width: 100% !important;
+  height: 320px !important;
+}
+
+/* Cool button styles for dark background */
+.btn {
+  background: linear-gradient(90deg, #6dd5ed 0%, #2193b0 100%);
+  color: #051923;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(33,147,176,0.25);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  margin-left: 10px;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(33,147,176,0.3); }
+.btn:active { transform: translateY(0); }
+
+/* Style file input to match */
+input[type="file"] {
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
