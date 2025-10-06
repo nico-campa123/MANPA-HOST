@@ -101,7 +101,45 @@ canvas {
   font-size: 13px;
   opacity: 0.95;
 }
-
+.repos{
+  position: absolute;
+  right: 400px;
+  bottom: 12px;
+  color: rgba(255,255,255,0.85);
+  font-size: 13px;
+  opacity: 0.95;
+}
+.repoback{
+  position: absolute;
+  right: 300px;
+  bottom: 12px;
+  color: rgba(255,255,255,0.85);
+  font-size: 13px;
+  opacity: 0.95;
+}
+.repofront{
+  position: absolute;
+  right: 200px;
+  bottom: 12px;
+  color: rgba(255,255,255,0.85);
+  font-size: 13px;
+  opacity: 0.95;
+}
+.repoIA{
+  position: absolute;
+  right: 100px;
+  bottom: 12px;
+  color: rgba(255,255,255,0.85);
+  font-size: 13px;
+  opacity: 0.95;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline; /* optional, for hover effect */
+}
 /* Table styles */
 table { background: rgba(255,255,255,0.06); border-radius: 8px; }
 th { padding: 12px 8px; color: #cfeaf7; }
